@@ -1,7 +1,12 @@
 import { Space } from "@spatial-id/javascript-sdk";
-import fetch from "cross-fetch";
+import origFetch from "cross-fetch";
+
+import { VectorTile } from "@mapbox/vector-tile";
+import Protobuf from "pbf";
 
 import type GeoJSON from "geojson";
+
+const fetch = origFetch.bind(undefined);
 
 // A subset of the TileJSON specification
 export type RequestSource = {
@@ -45,18 +50,31 @@ export const requestToGeoJSON: RequestToGeoJSON = async (source, id) => {
     throw new Error(`Not implemented: zoom level of requested Spatial ID (${id.zoom}) is below minimum zoom ${minzoom}`);
   }
   const requestZoom = Math.min(maxzoom || 25, id.zoom);
-  const requestTile = id.parent(requestZoom);
+  let requestTile: Space;
+  if (requestZoom < id.zfxy.z) {
+    requestTile = id.parent(requestZoom);
+  } else {
+    requestTile = id;
+  }
   const tileUrl = createTileUrl(tiles[0], requestTile);
 
   const response = await fetch(tileUrl);
   const data = await response.arrayBuffer();
 
   // decode vector tile, transform to GeoJSON
-  // ...
-  // not implemented yet
-
-  return {
+  const tile = new VectorTile(new Protobuf(data));
+  const out: GeoJSON.FeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
+
+  for (const layerName in tile.layers) {
+    const layer = tile.layers[layerName];
+    for (let i = 0; i < layer.length; i++) {
+      const feature = layer.feature(i).toGeoJSON(requestTile.zfxy.x, requestTile.zfxy.y, requestTile.zfxy.z);
+      out.features.push(feature);
+    }
+  }
+
+  return out;
 };

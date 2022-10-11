@@ -10,8 +10,12 @@ const config = {
   output: [
     {
       file: packageJson.main,
-      format: 'cjs',
+      format: 'umd',
       sourcemap: true,
+      name: 'SpatialIdRequest',
+      globals: {
+        'cross-fetch': 'window.fetch',
+      }
     },
     {
       file: packageJson.module,

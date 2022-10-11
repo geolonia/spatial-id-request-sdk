@@ -1,0 +1,45 @@
+{
+  "name": "@geolonia/spatial-id-request-sdk",
+  "version": "0.0.0",
+  "description": "The reference implementation of the Spatial ID Data Request SDK.",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "dist/**/*",
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geolonia/spatial-id-request-sdk.git"
+  },
+  "keywords": [],
+  "author": "Geolonia (https://geolonia.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geolonia/spatial-id-request-sdk/issues"
+  },
+  "homepage": "https://github.com/geolonia/spatial-id-request-sdk#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^23.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@types/geojson": "^7946.0.8",
+    "@types/jest": "^29.1.2",
+    "jest": "^29.1.2",
+    "rollup": "^2.70.2",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@spatial-id/javascript-sdk": "https://github.com/spatial-id/javascript-sdk",
+    "cross-fetch": "^3.1.5"
+  }
+}

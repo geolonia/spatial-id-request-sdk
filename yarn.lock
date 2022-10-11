@@ -558,6 +558,13 @@
     is-reference "1.2.1"
     magic-string "^0.26.4"
 
+"@rollup/plugin-json@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-json/-/plugin-json-5.0.0.tgz#1e3e18302637760353c83a41d1f3c4e760afb20d"
+  integrity sha512-LsWDA5wJs/ggzakVuKQhZo7HPRcQZgBa3jWIVxQSFxaRToUGNi8ZBh3+k/gQ+1eInVYJgn4WBRCUkmoDrmmGzw==
+  dependencies:
+    "@rollup/pluginutils" "^4.2.1"
+
 "@rollup/plugin-node-resolve@^15.0.0":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-15.0.0.tgz#44ded58b36702de27bf36bbf19ca420bbd1d0c27"

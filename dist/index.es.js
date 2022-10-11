@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -12,6 +14,17 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -51,11 +64,54 @@ function __generator(thisArg, body) {
     }
 }
 
-var request = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, 'hi'];
+var createTileUrl = function (template, id) { return (template
+    .replace('{z}', id.zfxy.z.toString())
+    .replace('{f}', id.zfxy.f.toString())
+    .replace('{x}', id.zfxy.x.toString())
+    .replace('{y}', id.zfxy.y.toString())); };
+var requestToGeoJSON = function (source, id) { return __awaiter(void 0, void 0, void 0, function () {
+    var tilejson, response_1, _a, tiles, rawMinzoom, maxzoom, minzoom, requestZoom, requestTile, tileUrl, response;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                tilejson = source;
+                if (!("url" in source)) return [3 /*break*/, 3];
+                return [4 /*yield*/, fetch(source.url)];
+            case 1:
+                response_1 = _b.sent();
+                _a = [{}];
+                return [4 /*yield*/, response_1.json()];
+            case 2:
+                tilejson = __assign.apply(void 0, [__assign.apply(void 0, _a.concat([(_b.sent())])), tilejson]);
+                _b.label = 3;
+            case 3:
+                if (!("tiles" in tilejson)) {
+                    throw new Error("TileJSON must contain a 'tiles' property");
+                }
+                tiles = tilejson.tiles, rawMinzoom = tilejson.minzoom, maxzoom = tilejson.maxzoom;
+                minzoom = rawMinzoom || 0;
+                if (minzoom !== undefined && id.zoom < minzoom) {
+                    throw new Error("Not implemented: zoom level of requested Spatial ID (".concat(id.zoom, ") is below minimum zoom ").concat(minzoom));
+                }
+                requestZoom = Math.min(maxzoom || 25, id.zoom);
+                requestTile = id.parent(requestZoom);
+                tileUrl = createTileUrl(tiles[0], requestTile);
+                return [4 /*yield*/, fetch(tileUrl)];
+            case 4:
+                response = _b.sent();
+                return [4 /*yield*/, response.arrayBuffer()];
+            case 5:
+                _b.sent();
+                // decode vector tile, transform to GeoJSON
+                // ...
+                // not implemented yet
+                return [2 /*return*/, {
+                        type: "FeatureCollection",
+                        features: [],
+                    }];
+        }
     });
 }); };
 
-export { request };
+export { requestToGeoJSON };
 //# sourceMappingURL=index.es.js.map

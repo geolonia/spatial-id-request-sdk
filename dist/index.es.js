@@ -1430,6 +1430,9 @@ var requestToGeoJSON = function (source, id) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, fetch(source.url)];
             case 1:
                 response_1 = _b.sent();
+                if (!response_1.ok) {
+                    throw new Error("TileJSON request to ".concat(source.url, " failed: ").concat(response_1.status, " ").concat(response_1.statusText));
+                }
                 _a = [{}];
                 return [4 /*yield*/, response_1.json()];
             case 2:
@@ -1455,6 +1458,9 @@ var requestToGeoJSON = function (source, id) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, fetch(tileUrl)];
             case 4:
                 response = _b.sent();
+                if (!response.ok) {
+                    throw new Error("Tile request to ".concat(tileUrl, " failed: ").concat(response.status, " ").concat(response.statusText));
+                }
                 return [4 /*yield*/, response.arrayBuffer()];
             case 5:
                 data = _b.sent();

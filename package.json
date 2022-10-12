@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "jest"
+    "test": "jest",
+    "build:docs": "yarn build && cp ./dist/index.js ./docs/spatial-id-request.js && curl https://raw.githubusercontent.com/spatial-id/javascript-sdk/main/dist/index.js > ./docs/spatial-id.js"
   },
   "repository": {
     "type": "git",

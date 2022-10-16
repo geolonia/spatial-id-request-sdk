@@ -25,27 +25,6 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-function getAugmentedNamespace(n) {
-  var f = n.default;
-	if (typeof f == "function") {
-		var a = function () {
-			return f.apply(this, arguments);
-		};
-		a.prototype = f.prototype;
-  } else a = {};
-  Object.defineProperty(a, '__esModule', {value: true});
-	Object.keys(n).forEach(function (k) {
-		var d = Object.getOwnPropertyDescriptor(n, k);
-		Object.defineProperty(a, k, d.get ? d : {
-			enumerable: true,
-			get: function () {
-				return n[k];
-			}
-		});
-	});
-	return a;
-}
-
 var pointGeometry = Point$1;
 
 /**
@@ -2699,13 +2678,6 @@ function multiSelect(arr, left, right, n, compare) {
     }
 }
 
-var rbush$1 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    'default': RBush
-});
-
-var require$$0 = /*@__PURE__*/getAugmentedNamespace(rbush$1);
-
 var js$2 = {};
 
 (function (exports) {
@@ -4894,7 +4866,7 @@ function bbox(geojson) {
 bbox["default"] = bbox;
 js.default = bbox;
 
-var rbush = require$$0;
+var rbush = RBush;
 var helpers = js$2;
 var meta = js$1;
 var turfBBox = js.default;

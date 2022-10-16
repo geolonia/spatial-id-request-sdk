@@ -1,10 +1,11 @@
+import fs from 'node:fs';
+
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
 import json from '@rollup/plugin-json';
 
-const packageJson = require('./package.json');
+const packageJson = JSON.parse(fs.readFileSync('./package.json'));
 
 const config = {
   input: 'src/index.ts',
@@ -28,8 +29,10 @@ const config = {
     ...Object.keys(packageJson.dependencies || {}),
   ],
   plugins: [
+    commonjs({
+      requireReturnsDefault: "auto",
+    }),
     resolve(),
-    commonjs(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
     // terser(),

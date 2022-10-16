@@ -4,10 +4,6 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.SpatialIdRequest = {}, global.window.fetch));
 })(this, (function (exports, origFetch) { 'use strict';
 
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-    var origFetch__default = /*#__PURE__*/_interopDefaultLegacy(origFetch);
-
     /******************************************************************************
     Copyright (c) Microsoft Corporation.
 
@@ -31,27 +27,6 @@
             function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
-    }
-
-    function getAugmentedNamespace(n) {
-      var f = n.default;
-    	if (typeof f == "function") {
-    		var a = function () {
-    			return f.apply(this, arguments);
-    		};
-    		a.prototype = f.prototype;
-      } else a = {};
-      Object.defineProperty(a, '__esModule', {value: true});
-    	Object.keys(n).forEach(function (k) {
-    		var d = Object.getOwnPropertyDescriptor(n, k);
-    		Object.defineProperty(a, k, d.get ? d : {
-    			enumerable: true,
-    			get: function () {
-    				return n[k];
-    			}
-    		});
-    	});
-    	return a;
     }
 
     var pointGeometry = Point$1;
@@ -2707,13 +2682,6 @@
         }
     }
 
-    var rbush$1 = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        'default': RBush
-    });
-
-    var require$$0 = /*@__PURE__*/getAugmentedNamespace(rbush$1);
-
     var js$2 = {};
 
     (function (exports) {
@@ -4902,7 +4870,7 @@
     bbox["default"] = bbox;
     js.default = bbox;
 
-    var rbush = require$$0;
+    var rbush = RBush;
     var helpers = js$2;
     var meta = js$1;
     var turfBBox = js.default;
@@ -5478,7 +5446,7 @@
         return bool;
     }
 
-    const fetch = origFetch__default["default"].bind(undefined);
+    const fetch = origFetch.bind(undefined);
     const createTileUrl = (template, id) => (template
         .replace('{z}', id.zfxy.z.toString())
         .replace('{f}', id.zfxy.f.toString())
@@ -5535,8 +5503,6 @@
     });
 
     exports.requestToGeoJSON = requestToGeoJSON;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=index.js.map

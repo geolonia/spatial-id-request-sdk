@@ -3,6 +3,7 @@ import origFetch from "cross-fetch";
 
 import { VectorTile } from "@mapbox/vector-tile";
 import Protobuf from "pbf";
+import turfBooleanIntersect from '@turf/boolean-intersects';
 
 import type GeoJSON from "geojson";
 
@@ -75,11 +76,15 @@ export const requestToGeoJSON: RequestToGeoJSON = async (source, id) => {
     features: [],
   };
 
+  const zfxyGeom = id.toGeoJSON();
+
   for (const layerName in tile.layers) {
     const layer = tile.layers[layerName];
     for (let i = 0; i < layer.length; i++) {
       const feature = layer.feature(i).toGeoJSON(requestTile.zfxy.x, requestTile.zfxy.y, requestTile.zfxy.z);
-      out.features.push(feature);
+      if (turfBooleanIntersect(zfxyGeom, feature)) {
+        out.features.push(feature);
+      }
     }
   }
 

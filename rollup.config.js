@@ -32,7 +32,7 @@ const config = {
     commonjs(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
-    terser(),
+    // terser(),
   ],
 };
 export default config;

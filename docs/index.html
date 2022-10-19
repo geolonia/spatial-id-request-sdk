@@ -6,7 +6,6 @@
   <title>空間IDデータ取得SDKサンプルページ</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-  <script src="./spatial-id.js"></script>
   <script src="./spatial-id-request.js"></script>
 </head>
 <body>
@@ -18,11 +17,11 @@
         <form id="requestForm">
           <div class="mb-3">
             <label for="spatialId" class="form-label">空間ID</label>
-            <input type="text" class="form-control" id="spatialId" value="8/0/227/100">
+            <input type="text" class="form-control" id="spatialId" value="16/0/58206/25807">
           </div>
           <div class="mb-3">
             <label for="tileURL" class="form-label">tile URL</label>
-            <input type="text" class="form-control" id="tileURL" value="https://geolonia.github.io/vector-tiles-api/tiles/{z}/{x}/{y}.mvt">
+            <input type="text" class="form-control" id="tileURL" value="https://geolonia.github.io/vector-tiles-api/tiles/tiles.json">
           </div>
           <button type="submit" class="btn btn-primary">リクエスト開始</button>
         </form>
@@ -35,8 +34,12 @@
     </div>
     <div class="row my-4 d-none" id="responseContainer">
       <div class="col">
-        <h2>レスポンス</h2>
-        <pre class="border p-2" style="max-height: 500px;"><code id="response"></code></pre>
+        <div class="card p-4">
+          <h2>リクエストのコード</h2>
+          <pre class="border p-2" style="max-height: 500px;"><code id="requestCode"></code></pre>
+          <h2>レスポンス</h2>
+          <pre class="border p-2" style="max-height: 500px;"><code id="response"></code></pre>
+        </div>
       </div>
     </div>
   </div>
@@ -51,15 +54,16 @@
       const spatialId = document.getElementById('spatialId').value;
       const tileURL = document.getElementById('tileURL').value;
       const source = {};
-      if (tileURL.endsWith('.json')) {
-        source.url = tileURL;
-      } else {
+      if (tileURL.includes('{z}') && tileURL.includes('{x}') && tileURL.includes('{y}')) {
         source.tiles = [tileURL];
+      } else {
+        source.url = tileURL;
       }
       try {
-        const response = await SpatialIdRequest.requestToGeoJSON(
+        document.getElementById('requestCode').innerText = `const response = await SpatialIdRequest.queryVectorTile(\n  ${JSON.stringify(source)},\n  new SpatialIdRequest.Space("${spatialId}")\n);`;
+        const response = await SpatialIdRequest.queryVectorTile(
           source,
-          new SpatialId.Space(spatialId),
+          new SpatialIdRequest.Space(spatialId),
         );
         document.getElementById('response').textContent = JSON.stringify(response, undefined, 2);
         document.getElementById('responseContainer').classList.remove('d-none');

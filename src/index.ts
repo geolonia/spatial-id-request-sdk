@@ -1,4 +1,4 @@
-import { Space } from "@spatial-id/javascript-sdk";
+import * as SpatialId from "@spatial-id/javascript-sdk";
 import origFetch from "cross-fetch";
 
 import { VectorTile } from "@mapbox/vector-tile";
@@ -6,7 +6,11 @@ import Protobuf from "pbf";
 import turfBooleanIntersect from '@turf/boolean-intersects';
 
 import type GeoJSON from "geojson";
+import { LngLatWithAltitude } from "@spatial-id/javascript-sdk/dist/types";
+import { ZFXYTile } from "@spatial-id/javascript-sdk/dist/zfxy";
 
+export type Space = SpatialId.Space;
+export const Space = SpatialId.Space;
 const fetch: typeof origFetch = origFetch.bind(undefined);
 
 // A subset of the TileJSON specification
@@ -30,9 +34,16 @@ const createTileUrl = (template: string, id: Space) => (
     .replace('{y}', id.zfxy.y.toString())
 )
 
-type RequestToGeoJSON = (source: RequestSource, id: Space) => Promise<GeoJSON.FeatureCollection>;
+type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string) => Promise<GeoJSON.FeatureCollection>;
 
-export const requestToGeoJSON: RequestToGeoJSON = async (source, id) => {
+export const queryVectorTile: QueryVectorTile = async (source, inputId) => {
+  let id: Space;
+  if (inputId instanceof Space) {
+    id = inputId;
+  } else {
+    id = new Space(inputId);
+  }
+
   let tilejson = source;
   if ("url" in source) {
     const response = await fetch(source.url);
@@ -82,6 +93,7 @@ export const requestToGeoJSON: RequestToGeoJSON = async (source, id) => {
     const layer = tile.layers[layerName];
     for (let i = 0; i < layer.length; i++) {
       const feature = layer.feature(i).toGeoJSON(requestTile.zfxy.x, requestTile.zfxy.y, requestTile.zfxy.z);
+      feature.properties._layer = layerName;
       if (turfBooleanIntersect(zfxyGeom, feature)) {
         out.features.push(feature);
       }

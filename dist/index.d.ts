@@ -15,6 +15,6 @@ export declare type RequestSource = {
     minzoom?: number;
     maxzoom?: number;
 };
-declare type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string) => Promise<GeoJSON.FeatureCollection>;
+declare type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string, zoom?: number) => Promise<GeoJSON.FeatureCollection>;
 export declare const queryVectorTile: QueryVectorTile;
 export {};

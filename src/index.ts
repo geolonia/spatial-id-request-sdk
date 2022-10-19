@@ -34,14 +34,14 @@ const createTileUrl = (template: string, id: Space) => (
     .replace('{y}', id.zfxy.y.toString())
 )
 
-type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string) => Promise<GeoJSON.FeatureCollection>;
+type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string, zoom?: number) => Promise<GeoJSON.FeatureCollection>;
 
-export const queryVectorTile: QueryVectorTile = async (source, inputId) => {
+export const queryVectorTile: QueryVectorTile = async (source, inputId, zoom) => {
   let id: Space;
   if (inputId instanceof Space) {
     id = inputId;
   } else {
-    id = new Space(inputId);
+    id = new Space(inputId, zoom);
   }
 
   let tilejson = source;

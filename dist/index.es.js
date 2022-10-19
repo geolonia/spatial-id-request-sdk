@@ -5757,13 +5757,13 @@ const createTileUrl = (template, id) => (template
     .replace('{f}', id.zfxy.f.toString())
     .replace('{x}', id.zfxy.x.toString())
     .replace('{y}', id.zfxy.y.toString()));
-const queryVectorTile = (source, inputId) => __awaiter(void 0, void 0, void 0, function* () {
+const queryVectorTile = (source, inputId, zoom) => __awaiter(void 0, void 0, void 0, function* () {
     let id;
     if (inputId instanceof Space) {
         id = inputId;
     }
     else {
-        id = new Space(inputId);
+        id = new Space(inputId, zoom);
     }
     let tilejson = source;
     if ("url" in source) {
@@ -5806,6 +5806,7 @@ const queryVectorTile = (source, inputId) => __awaiter(void 0, void 0, void 0, f
         const layer = tile.layers[layerName];
         for (let i = 0; i < layer.length; i++) {
             const feature = layer.feature(i).toGeoJSON(requestTile.zfxy.x, requestTile.zfxy.y, requestTile.zfxy.z);
+            feature.properties._layer = layerName;
             if (booleanIntersects(zfxyGeom, feature)) {
                 out.features.push(feature);
             }

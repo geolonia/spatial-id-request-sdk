@@ -28,8 +28,13 @@ _(TODO: 組織移管先決定後訂正)_
 ズームレベル、高さ、緯度、経度から、空間ID インスタンスを生成します。
 
 ```
-code sample here
+// ZFXY文字列
+new SpatialIdRequest.Space('16/0/58206/25807');
+// 緯度経度+標高（ `alt` ）
+new SpatialIdRequest.Space({lng: 139.73785400390625, lat: 35.675705221389876, alt: 30});
 ```
+
+詳細は [こちらを確認してください](https://github.com/spatial-id/javascript-sdk#%E3%82%B3%E3%83%B3%E3%82%B9%E3%83%88%E3%83%A9%E3%82%AF%E3%82%BF)
 
 ### 空間ID API へリクエストを送信し、レスポンスをGeoJSON形式で取得する
 

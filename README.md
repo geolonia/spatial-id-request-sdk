@@ -1,15 +1,17 @@
-# 3D 空間 ID データ取得共通ライブラリ
+# 空間 ID データ取得SDK
 
-空間IDを利用し、ベクトルタイルをクエリーできるライブラリです。このライブラリは、ベクトルタイルを指すソース情報とクエリーする空間IDをインプットとし、その空間IDと重なる地物をGeoJSON型としてアウトプットします。
+## 概要
 
-## 利用方法
+空間IDを利用し、ベクトルタイルをクエリーできるNode.jsライブラリです。このライブラリは、リクエスト先URL（ベクトルタイルを指すソース情報）とクエリーする空間IDをインプットとし、その空間IDと重なる地物をGeoJSON型としてアウトプットします。
+
+## インストール方法
 
 NodeJS またはブラウザの環境で動作します。NodeJSの場合は npm でインストールします：
 
-**TODO**: 組織移管先決定後訂正
 ```
 npm install https://github.com/geolonia/spatial-id-request-sdk -S
 ```
+_(TODO: 組織移管先決定後訂正)_
 
 ブラウザの場合は `<script>` タグで読み込ませてください：
 
@@ -19,7 +21,19 @@ npm install https://github.com/geolonia/spatial-id-request-sdk -S
 
 ブラウザの場合は、 `SpatialIdRequest` のグローバル変数に入ります。
 
-## ベクトルタイルのデータをクエリーする
+## 各種メソッドの利用方法とサンプルコード
+
+### 空間ID を導出する
+
+ズームレベル、高さ、緯度、経度から、空間ID インスタンスを生成します。
+
+```
+code sample here
+```
+
+### 空間ID API へリクエストを送信し、レスポンスをGeoJSON形式で取得する
+
+空間ID API 基盤のURLと空間IDをインプットとし、レスポンスをGeoJSON形式で確認することができます。
 
 ```
 const response = await SpatialIdRequest.queryVectorTile( source, spatialId, zoom? );
@@ -42,4 +56,21 @@ const response = await SpatialIdRequest.queryVectorTile( source, spatialId, zoom
 ..., {lng: 139.73785400390625, lat: 35.675705221389876}, 16);
 ```
 
-[サンプルを見る](https://geolonia.github.io/spatial-id-request-sdk/)
+実際のリクエスト先URLと空間IDを用いたサンプルコードとレスポンスは、
+
+https://geolonia.github.io/spatial-id-request-sdk/
+
+で確認することが可能です。
+
+### 空間ID マニピュレーション
+
+空間IDの分解能を変更したり、周辺オブジェクト等を取得したりするなど、空間データを操作する機能を提供しています。
+
+* 指定した空間IDのボクセルを構成する8点の標高、緯度、経度および中心点を返す
+* ある標高、緯度、経度が指定された空間IDに含まれるか判定する
+* 指定した空間IDの一つ上もしくは一つ下の空間IDを返す
+* 指定した空間IDの指定された方角に隣接する空間IDを返す
+* 指定した空間IDの周囲にあるすべての空間IDを返す
+* 指定した空間IDの親もしくは子の空間IDを返す
+
+[メソッドドキュメンテーション](https://github.com/spatial-id/spatial-object-model-specification#readme)

@@ -618,7 +618,7 @@
 
 "@spatial-id/javascript-sdk@https://github.com/spatial-id/javascript-sdk":
   version "0.0.0"
-  resolved "https://github.com/spatial-id/javascript-sdk#4f0679014e209d8828dca95e6d3951b2dc7a2480"
+  resolved "https://github.com/spatial-id/javascript-sdk#effdb3d3f42a2de098949fd0406e69cc1f47dd0f"
 
 "@turf/bbox@*":
   version "6.5.0"

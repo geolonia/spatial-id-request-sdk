@@ -6,18 +6,13 @@
 
 ## インストール方法
 
-NodeJS またはブラウザの環境で動作します。NodeJSの場合は npm でインストールします：
-
-```
-npm install https://github.com/geolonia/spatial-id-request-sdk -S
-```
-_(TODO: 組織移管先決定後訂正)_
-
-ブラウザの場合は `<script>` タグで読み込ませてください：
+`<script>` タグで読み込ませてください：
 
 ```
 <script src="https://geolonia.github.io/spatial-id-request-sdk/spatial-id-request.js"></script>
 ```
+
+NodeJSで利用する場合は、上記のJavaScriptファイルをダウンロードしていただき、直接 `require` してください。
 
 ブラウザの場合は、 `SpatialIdRequest` のグローバル変数に入ります。
 

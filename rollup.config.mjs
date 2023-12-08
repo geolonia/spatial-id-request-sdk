@@ -26,7 +26,7 @@ const config = {
     },
   ],
   external: [
-    ...Object.keys(packageJson.dependencies || {}),
+    'cross-fetch',
   ],
   plugins: [
     commonjs({

@@ -1,6 +1,8 @@
 import * as SpatialId from "@spatial-id/javascript-sdk";
 import origFetch from "cross-fetch";
 
+import * as pmtiles from "pmtiles";
+
 import { VectorTile } from "@mapbox/vector-tile";
 import Protobuf from "pbf";
 import turfBooleanIntersect from '@turf/boolean-intersects';
@@ -34,6 +36,25 @@ const createTileUrl = (template: string, id: Space) => (
     .replace('{y}', id.zfxy.y.toString())
 )
 
+const getTileContents = async (src: string | pmtiles.PMTiles, tile: Space) => {
+  if (typeof src === 'string') {
+    const tileUrl = createTileUrl(src, tile);
+    const response = await fetch(tileUrl);
+    if (!response.ok) {
+      throw new Error(`Tile request to ${tileUrl} failed: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.arrayBuffer();
+    return data;
+  } else {
+    const rangeResp = await src.getZxy(tile.zfxy.z, tile.zfxy.x, tile.zfxy.y);
+    if (!rangeResp) {
+      throw new Error(`Tile request to ${tile.zfxy.z}/${tile.zfxy.x}/${tile.zfxy.y} failed: no tile found`);
+    }
+    return rangeResp.data;
+  }
+};
+
 type QueryVectorTile = (source: RequestSource, id: Space | LngLatWithAltitude | ZFXYTile | string, zoom?: number) => Promise<GeoJSON.FeatureCollection>;
 
 export const queryVectorTile: QueryVectorTile = async (source, inputId, zoom) => {
@@ -44,22 +65,29 @@ export const queryVectorTile: QueryVectorTile = async (source, inputId, zoom) =>
     id = new Space(inputId, zoom);
   }
 
+  let pmtilesSource: pmtiles.PMTiles | undefined = undefined;
+
   let tilejson = source;
   if ("url" in source) {
-    const response = await fetch(source.url);
-    if (!response.ok) {
-      throw new Error(`TileJSON request to ${source.url} failed: ${response.status} ${response.statusText}`);
+    const url = new URL(source.url);
+    if (url.pathname.endsWith(".pmtiles")) {
+      pmtilesSource = new pmtiles.PMTiles(source.url);
+    } else {
+      const response = await fetch(source.url);
+      if (!response.ok) {
+        throw new Error(`TileJSON request to ${source.url} failed: ${response.status} ${response.statusText}`);
+      }
+      tilejson = {
+        ...(await response.json()),
+        ...tilejson,
+      };
     }
-    tilejson = {
-      ...(await response.json()),
-      ...tilejson,
-    };
   }
-  if (!("tiles" in tilejson)) {
+  if (typeof pmtilesSource === 'undefined' && !("tiles" in tilejson)) {
     throw new Error("TileJSON must contain a 'tiles' property");
   }
 
-  const { tiles, minzoom: rawMinzoom, maxzoom } = tilejson;
+  const { minzoom: rawMinzoom, maxzoom } = tilejson;
   const minzoom = rawMinzoom || 0;
   if (minzoom !== undefined && id.zoom < minzoom) {
     throw new Error(`Not implemented: zoom level of requested Spatial ID (${id.zoom}) is below minimum zoom ${minzoom}`);
@@ -71,14 +99,11 @@ export const queryVectorTile: QueryVectorTile = async (source, inputId, zoom) =>
   } else {
     requestTile = id;
   }
-  const tileUrl = createTileUrl(tiles[0], requestTile);
 
-  const response = await fetch(tileUrl);
-  if (!response.ok) {
-    throw new Error(`Tile request to ${tileUrl} failed: ${response.status} ${response.statusText}`);
-  }
+  const src = typeof pmtilesSource !== 'undefined' ? pmtilesSource :
+    'tiles' in tilejson ? tilejson.tiles[0] : '';
 
-  const data = await response.arrayBuffer();
+  const data = await getTileContents(src, requestTile);
 
   // decode vector tile, transform to GeoJSON
   const tile = new VectorTile(new Protobuf(data));

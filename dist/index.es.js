@@ -11453,6 +11453,7 @@ const queryVectorTile = (source, inputId, zoom) => __awaiter(void 0, void 0, voi
         const url = new URL(source.url);
         if (url.pathname.endsWith(".pmtiles")) {
             pmtilesSource = new PMTiles(source.url);
+            tilejson = yield pmtilesSource.getMetadata();
         }
         else {
             const response = yield fetch$1(source.url);

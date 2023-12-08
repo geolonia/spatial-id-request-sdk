@@ -72,6 +72,7 @@ export const queryVectorTile: QueryVectorTile = async (source, inputId, zoom) =>
     const url = new URL(source.url);
     if (url.pathname.endsWith(".pmtiles")) {
       pmtilesSource = new pmtiles.PMTiles(source.url);
+      tilejson = await pmtilesSource.getMetadata();
     } else {
       const response = await fetch(source.url);
       if (!response.ok) {
